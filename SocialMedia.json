@@ -1,0 +1,962 @@
+{
+  "name": "SocialMedia",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "014f23fe-1e75-4990-bfaa-04f8ffb1be08",
+              "leftValue": "={{ $('PostForm').item.json.PostMedia }}",
+              "rightValue": "Image",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -432,
+        976
+      ],
+      "id": "79387b8c-fa7b-4c85-b841-e8fbe055db47",
+      "name": "hasMedia"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "b2c12426-87fd-4c92-9495-7c300d9b24c0",
+                    "leftValue": "={{ $('PostForm').item.json.PostMedia[0].mimetype }}",
+                    "rightValue": "=image",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "image"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "bc05dc32-7c14-472a-8211-dee8802299ea",
+                    "leftValue": "={{ $('PostForm').item.json.PostMedia[0].mimetype }}",
+                    "rightValue": "video",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "video"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -320,
+        48
+      ],
+      "id": "208f736c-d474-457b-a575-8899c0dbc58c",
+      "name": "MediaSwitch"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "d17db16e-0418-464d-8435-ce802a04fea2",
+                    "leftValue": "={{ $('PostForm').item.json.PostType }}",
+                    "rightValue": "LinkedinArticle",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "articlePost"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('PostForm').item.json.PostType }}",
+                    "rightValue": "Standard",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "35e116bb-925c-4f91-a960-6925abb86039"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "standardPost"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -320,
+        336
+      ],
+      "id": "6a7b95bc-b1e4-406a-b668-2e414dd020ba",
+      "name": "nonMediaSwitch"
+    },
+    {
+      "parameters": {
+        "person": "Ts81JUemfa",
+        "text": "={{ $('PostForm').item.json.PostContent }}\n{{ $('PostForm').item.json.URLinPost }}",
+        "shareMediaCategory": "=",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        432
+      ],
+      "id": "e86e4353-edf4-4e80-8cb7-8d7c7d547506",
+      "name": "PostText",
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "MZeK56uAiwBLjE3d",
+          "name": "LinkedIn account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "person": "Ts81JUemfa",
+        "text": "={{ $('PostForm').item.json.PostContent }}\n{{ $('PostForm').item.json.URLinPost }}",
+        "shareMediaCategory": "ARTICLE",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        256
+      ],
+      "id": "9d92e014-1662-40ad-a90b-89984928e495",
+      "name": "PostArticle",
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "MZeK56uAiwBLjE3d",
+          "name": "LinkedIn account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://mastodon.social/api/v2/media",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "oAuth2Api",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "=PostMedia"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -192,
+        880
+      ],
+      "id": "99c0fc29-ed84-4a52-811a-7ede94c6b30a",
+      "name": "Mastodon-Media-Upload",
+      "credentials": {
+        "oAuth2Api": {
+          "id": "Rl4rKw228Swq608v",
+          "name": "MastodonCredential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://mastodon.social/api/v1/statuses",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "oAuth2Api",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "status",
+              "value": "={{ $('PostForm').item.json['PostContent'] }}\n{{ $('PostForm').item.json['URLinPost'] }}"
+            },
+            {
+              "name": "media_ids",
+              "value": "={{ [$json.id] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        128,
+        864
+      ],
+      "id": "89925141-a070-499f-9b62-059acb996cb9",
+      "name": "Mastodon-Post-with-Media",
+      "credentials": {
+        "oAuth2Api": {
+          "id": "Rl4rKw228Swq608v",
+          "name": "MastodonCredential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://mastodon.social/api/v1/statuses",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "oAuth2Api",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "status",
+              "value": "={{ $('PostForm').item.json.PostContent }}\n{{ $('PostForm').item.json.URLinPost }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -208,
+        1072
+      ],
+      "id": "b17f22c0-ee5f-4a4d-9184-4e99f374ba4f",
+      "name": "Mastodon-Post-Simple",
+      "credentials": {
+        "oAuth2Api": {
+          "id": "Rl4rKw228Swq608v",
+          "name": "MastodonCredential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://bsky.social/xrpc/com.atproto.server.createSession",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpCustomAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -336,
+        608
+      ],
+      "id": "012934f8-6284-496e-8466-ebb114d9f4dc",
+      "name": "CreateBSkySession",
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "9gFrJYWu9z3Lsplv",
+          "name": "BlueSkyCredentials"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://bsky.social/xrpc/com.atproto.repo.createRecord",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('CreateBSkySession').item.json.accessJwt }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"repo\": \"{{ $('CreateBSkySession').item.json.handle }}\",\n  \"collection\": \"app.bsky.feed.post\",\n  \"record\": {\n    \"$type\": \"app.bsky.feed.post\",\n    \"text\": {{ JSON.stringify($('PostForm').item.json['PostContent']) }},\n    \"createdAt\": \"{{DateTime.now().toISO()}}\",\n    \"facets\": {{ JSON.stringify($json.facets ?? []) }}\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        192,
+        672
+      ],
+      "id": "5631fe01-f8bd-4e50-ae67-842b1f308283",
+      "name": "BSkyPost"
+    },
+    {
+      "parameters": {
+        "formTitle": "Social Media Posts",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "PostContent",
+              "fieldType": "textarea"
+            },
+            {
+              "fieldLabel": "PostType",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Standard"
+                  },
+                  {
+                    "option": "LinkedInArticle"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "TargetNetworks",
+              "fieldType": "checkbox",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Bluesky"
+                  },
+                  {
+                    "option": "LinkedIn"
+                  },
+                  {
+                    "option": "Mastodon"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "PostMedia",
+              "fieldType": "file",
+              "acceptFileTypes": ".png, .jpg, .jpeg, .bmp, .webp, mp4"
+            },
+            {
+              "fieldLabel": "URLinPost"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -1440,
+        1088
+      ],
+      "id": "e2df117a-d0a1-45a1-9164-1f8a5c393b59",
+      "name": "PostForm",
+      "webhookId": "08e9f88b-77ed-46b9-8da4-bf030763f931"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Get the data for the current item\nconst postForm = $input.item.json;\n\nlet isPostLengthOKForBluesky = true;\nlet isPostLengthOKForLinkedin = true;\nlet isPostLengthOKForMastodon = true;\n\nlet blueSkyFlag = 0;\nlet linkedInFlag = 0;\nlet mastodonFlag = 0;\n\nconst blueskyCharacterLimit = 300;\nconst linkedInCharacterLimit = 3000;\nconst mastodonCharacterLimit = 500;\n\n// checking for targetNetworks\nfor (let i = 0; i < postForm.TargetNetworks.length; i++) {\n  switch (postForm.TargetNetworks[i]) {\n    case \"Bluesky\":\n      blueSkyFlag = 1;\n      break;\n    \n    case \"LinkedIn\":\n      linkedInFlag = 1;\n      break;\n    \n    case \"Mastodon\":\n      mastodonFlag = 1;\n      break;\n    \n    default:\n      break;\n  }\n}\n\n// checking character lengths\nconst postLength = JSON.stringify(postForm.PostContent).length;\n\nif (blueSkyFlag == 1 && postLength > blueskyCharacterLimit) {\n  isPostLengthOKForBluesky = false;\n}\n\nif (linkedInFlag == 1 && postLength > linkedInCharacterLimit) {\n  isPostLengthOKForLinkedin = false;\n}\n\nif (mastodonFlag == 1 && postLength > mastodonCharacterLimit) {\n  isPostLengthOKForMastodon = false;\n}\n\n//is the PostType compatible with TargetNetworks\nlet isLinkedInArticleCompatible = true;\n\nif ((linkedInFlag == 0 && postForm.PostType == \"LinkedInArticle\") ||\n  (linkedInFlag == 1 && postForm.PostType == \"LinkedInArticle\" && postForm.URLinPost == \"\"))    {\n  isLinkedInArticleCompatible = false;\n}\n\n// Number of binaries\nlet numberOfBinaries\ntry {\n  numberOfBinaries = postForm.PostMedia.length;\n} catch (err) {numberOfBinaries = 0;}\n\n// Re-attach binaries from PostForm\nconst originalBinary = $('PostForm').item.binary;\n\n// 3. Return values\nreturn [\n  {\n    json: {\n      postLength : postLength,\n      isBlueskyContentLengthOK : isPostLengthOKForBluesky,\n      isLinkedinContentLengthOK : isPostLengthOKForLinkedin,\n      isMastodonContentLengthOK : isPostLengthOKForMastodon,\n      isPostTypeCorrect : isLinkedInArticleCompatible,\n      numberOfBinaries : numberOfBinaries\n    },\n    binary: originalBinary    // re-attach files from previous Node\n  }\n  \n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1216,
+        1088
+      ],
+      "id": "eadb4b58-0341-46a6-9744-6faf008171b4",
+      "name": "FormValidation"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "eef6c17e-5785-4f29-8351-5113d4822afd",
+              "leftValue": "={{ $('PostForm').item.json.TargetNetworks }}",
+              "rightValue": "LinkedIn",
+              "operator": {
+                "type": "array",
+                "operation": "contains",
+                "rightType": "any"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -768,
+        240
+      ],
+      "id": "6b874e53-bf04-418d-956b-7e265bd7767d",
+      "name": "TargetSocialNetworkisLinkedin"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "eef6c17e-5785-4f29-8351-5113d4822afd",
+              "leftValue": "={{ $('PostForm').item.json.TargetNetworks }}",
+              "rightValue": "Mastodon",
+              "operator": {
+                "type": "array",
+                "operation": "contains",
+                "rightType": "any"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -656,
+        976
+      ],
+      "id": "34c57eed-145d-4765-b189-51f8c265b66a",
+      "name": "TargetSocialNetworkisMastodon"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "eef6c17e-5785-4f29-8351-5113d4822afd",
+              "leftValue": "={{ $('PostForm').item.json.TargetNetworks }}",
+              "rightValue": "Bluesky",
+              "operator": {
+                "type": "array",
+                "operation": "contains",
+                "rightType": "any"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -656,
+        672
+      ],
+      "id": "8cc033ef-4412-4f6d-8434-2d4df595c97f",
+      "name": "TargetSocialNetworkisBluesky"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "014f23fe-1e75-4990-bfaa-04f8ffb1be08",
+              "leftValue": "={{ $('PostForm').item.json.PostMedia }}",
+              "rightValue": "Image",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -544,
+        240
+      ],
+      "id": "52e25fe8-6c72-42d5-9ad1-9e12282f264c",
+      "name": "hasMedia1"
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "Validation Failed",
+        "completionMessage": "=<ul>\n<li>Post Length: {{ $json.postLength }}</li>\n<li>Bluesky post length OK: {{ $json.isBlueskyContentLengthOK }}</li>\n<li>LinkedIn post length OK: {{ $json.isLinkedinContentLengthOK }}</li>\n<li>Mastodon post length OK: {{ $json.isMastodonContentLengthOK }}</li>\n<li>PostType compatible with TargetNetwork: {{ $json.isPostTypeCorrect }}</ul></li>\n\nhttp://localhost:5678/form-test/712954ca-3e6e-46ca-b039-46894e8b2a47",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.5,
+      "position": [
+        -768,
+        1200
+      ],
+      "id": "84cc4ea7-f82f-41c5-af68-a400e8f26013",
+      "name": "returnToForm",
+      "webhookId": "05304b00-625a-4e9e-8a7a-056e338a27e7"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b7a1200d-e77a-43da-8011-da6a7ea4e572",
+              "leftValue": "={{ $json.isBlueskyContentLengthOK }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "6548550d-c7fe-465b-9513-31ea30a357c8",
+              "leftValue": "={{ $json.isLinkedinContentLengthOK }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "359286cb-0a3c-4602-ac08-cad37fc24b8f",
+              "leftValue": "={{ $json.isMastodonContentLengthOK }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "5f1fe59c-85d3-408b-b3a6-857ff389a70b",
+              "leftValue": "={{ $json.isPostTypeCorrect }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -992,
+        1088
+      ],
+      "id": "7b7da475-651c-45bb-9c10-f0026fd2644f",
+      "name": "isValidationOK"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node\n// Input: postContent\n// Output: facets for hashtags if applicable\n\nconst postContent = $('PostForm').first().json.PostContent;\nconst enc = new TextEncoder();\nconst extractedHashTags = extractHashtagFacets(postContent);\nreturn[ \n  {\n  json:\n    {\n      facets : extractedHashTags\n    }\n  }\n  ]\n\nfunction charIndexToByteOffset(text, charIndex){\n  // Important: BlueSky facet indices are UTF8 byte offsets, not JS char indices\n  return enc.encode(text.slice(0,charIndex)).length;\n}\n\nfunction hashtagFacet(text, matchStart, matchEnd, tagWithoutHash){\n  const byteStart = charIndexToByteOffset(text,matchStart);\n  const byteEnd = charIndexToByteOffset(text, matchEnd);\n  \n  return {\n    index: {\n      byteStart: byteStart,\n      byteEnd: byteEnd,\n    },\n    features: [\n      { $type: \"app.bsky.richtext.facet#tag\", tag:tagWithoutHash }\n    ]\n  };\n}\n\nfunction extractHashtagFacets(text) {\n  // Basic hashtag matcher: # + letters/numbers/underscore\n  const regex = /#[A-Za-z0-0_]+/g;\n  const facets = [];\n\n  for (const match of text.matchAll(regex)) {\n    const start = match.index;\n    const end = start + match[0].length;\n    \n    facets.push(\n               hashtagFacet(\n                 text,\n                 start,\n                 end,\n                 match[0].slice(1) // removes '#'\n               )\n      );\n  }\n  return facets;\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        672
+      ],
+      "id": "84b823a7-a6bd-479d-8efd-8f5c299389c5",
+      "name": "hashtagFacets"
+    },
+    {
+      "parameters": {
+        "content": "## Upload\nMastodon-Media-Upload assumes 1 file.\nTrying to upload multiple files"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        464,
+        816
+      ],
+      "id": "ba4e8dd3-67b0-48e7-89a8-7e6cb91d1577",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Credentials\nTrying to hide plain text user name and password"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        144,
+        368
+      ],
+      "id": "a4501af9-7949-4e26-9d6e-05d4255deae5",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Verification\nNumber of files\nSize of files"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1360,
+        864
+      ],
+      "id": "ed7be146-33ab-4e40-a1b6-1f27d53b1f6d",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Video\nPublish video to LinkedIn"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        144,
+        112
+      ],
+      "id": "3fefb71a-c476-4362-861c-d9d1413b8154",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## BSky Media\nPublish images to bluesky"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        480,
+        512
+      ],
+      "id": "de665761-7a3f-42c8-8ca9-a9aab885e8b8",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "person": "Ts81JUemfa",
+        "text": "={{ $('PostForm').item.json.PostContent }} \n{{ $('PostForm').item.json.URLinPost }}",
+        "shareMediaCategory": "IMAGE",
+        "binaryPropertyName": "PostMedia",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f7bd06d9-613a-44ed-a2e7-b69d6f96edd4",
+      "name": "Create a post",
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "MZeK56uAiwBLjE3d",
+          "name": "LinkedIn account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "hasMedia": {
+      "main": [
+        [
+          {
+            "node": "Mastodon-Media-Upload",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mastodon-Post-Simple",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MediaSwitch": {
+      "main": [
+        [
+          {
+            "node": "Create a post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "nonMediaSwitch": {
+      "main": [
+        [
+          {
+            "node": "PostArticle",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "PostText",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mastodon-Media-Upload": {
+      "main": [
+        [
+          {
+            "node": "Mastodon-Post-with-Media",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CreateBSkySession": {
+      "main": [
+        [
+          {
+            "node": "hashtagFacets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PostForm": {
+      "main": [
+        [
+          {
+            "node": "FormValidation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FormValidation": {
+      "main": [
+        [
+          {
+            "node": "isValidationOK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TargetSocialNetworkisBluesky": {
+      "main": [
+        [
+          {
+            "node": "CreateBSkySession",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TargetSocialNetworkisMastodon": {
+      "main": [
+        [
+          {
+            "node": "hasMedia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TargetSocialNetworkisLinkedin": {
+      "main": [
+        [
+          {
+            "node": "hasMedia1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "hasMedia1": {
+      "main": [
+        [
+          {
+            "node": "MediaSwitch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "nonMediaSwitch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "isValidationOK": {
+      "main": [
+        [
+          {
+            "node": "TargetSocialNetworkisMastodon",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "TargetSocialNetworkisBluesky",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "TargetSocialNetworkisLinkedin",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "returnToForm",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "hashtagFacets": {
+      "main": [
+        [
+          {
+            "node": "BSkyPost",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "88317305-eabd-4fe4-a2e3-244bc2a41743",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "69c8f3e8f4abce0ae42c3efafb04e635a4840af3580409e2e43cd9379f9de14e"
+  },
+  "id": "zDEW9A0McNJpFyfb",
+  "tags": []
+}
