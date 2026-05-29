@@ -17,6 +17,8 @@ The workflow supports:
 - Bluesky hashtag facet generation
 - Validation for platform character limits
 
+<img width="1432" height="818" alt="Screenshot from 2026-05-29 12-26-22" src="https://github.com/user-attachments/assets/7b1e3f36-b759-4f33-880d-322b6af24d52" />
+
 ---
 
 ## Features
