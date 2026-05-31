@@ -20,6 +20,11 @@ The workflow supports:
 <img width="1432" height="818" alt="Screenshot from 2026-05-29 12-26-22" src="https://github.com/user-attachments/assets/7b1e3f36-b759-4f33-880d-322b6af24d52" />
 
 ---
+## Recognition
+
+- Setting up n8n with LinkedIn was largely based on the video by user Lakshit Ukani | AI Automation on Youtube. Check out https://www.youtube.com/watch?v=OUrkh4VRSeA
+- Setting up n8n with Mastodon was based on the video by user Dalandan Studio on Youtube. Check out https://www.youtube.com/watch?v=Vb4TMKjr2_g
+- Setting up n8n with Bluesky was largely based on a video by a user on Youtube but can't find their video anymore... British guy with not much hair :)
 
 ## Features
 
