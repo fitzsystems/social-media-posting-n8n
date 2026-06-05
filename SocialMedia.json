@@ -3,42 +3,6 @@
   "nodes": [
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 3
-          },
-          "conditions": [
-            {
-              "id": "014f23fe-1e75-4990-bfaa-04f8ffb1be08",
-              "leftValue": "={{ $('PostForm').item.json.PostMedia }}",
-              "rightValue": "Image",
-              "operator": {
-                "type": "array",
-                "operation": "notEmpty",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "or"
-        },
-        "options": {
-          "ignoreCase": false
-        }
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.3,
-      "position": [
-        -432,
-        976
-      ],
-      "id": "79387b8c-fa7b-4c85-b841-e8fbe055db47",
-      "name": "hasMedia"
-    },
-    {
-      "parameters": {
         "rules": {
           "values": [
             {
@@ -329,6 +293,7 @@
       ],
       "id": "012934f8-6284-496e-8466-ebb114d9f4dc",
       "name": "CreateBSkySession",
+      "retryOnFail": true,
       "credentials": {
         "httpCustomAuth": {
           "id": "9gFrJYWu9z3Lsplv",
@@ -351,7 +316,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"repo\": \"{{ $('CreateBSkySession').item.json.handle }}\",\n  \"collection\": \"app.bsky.feed.post\",\n  \"record\": {\n    \"$type\": \"app.bsky.feed.post\",\n    \"text\": {{ JSON.stringify($('PostForm').item.json['PostContent']) }},\n    \"createdAt\": \"{{DateTime.now().toISO()}}\",\n    \"facets\": {{ JSON.stringify($json.facets ?? []) }}\n  }\n}",
+        "jsonBody": "={\n  \"repo\": \"{{ $('CreateBSkySession').item.json.handle }}\",\n  \"collection\": \"app.bsky.feed.post\",\n  \"record\": {{ \n    (() => {\n      const url = $('PostForm').item.json.URLinPost;\n      const hasUrl = url && url.trim() !== '';\n      \n      const record = {\n        \"$type\": \"app.bsky.feed.post\",\n        \"text\": $('PostForm').item.json['PostContent'],\n        \"createdAt\": DateTime.now().toISO(),\n        \"facets\": $json.facets ?? []\n      };\n      \n      if (hasUrl) {\n        record.embed = {\n          \"$type\": \"app.bsky.embed.external\",\n          \"external\": {\n            \"uri\": url.trim(),\n            \"title\": \"\",\n            \"description\": \"\"\n          }\n        };\n      }\n      \n      return JSON.stringify(record);\n    })()\n  }}\n}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -439,144 +404,6 @@
       ],
       "id": "eadb4b58-0341-46a6-9744-6faf008171b4",
       "name": "FormValidation"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 3
-          },
-          "conditions": [
-            {
-              "id": "eef6c17e-5785-4f29-8351-5113d4822afd",
-              "leftValue": "={{ $('PostForm').item.json.TargetNetworks }}",
-              "rightValue": "LinkedIn",
-              "operator": {
-                "type": "array",
-                "operation": "contains",
-                "rightType": "any"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.3,
-      "position": [
-        -768,
-        240
-      ],
-      "id": "6b874e53-bf04-418d-956b-7e265bd7767d",
-      "name": "TargetSocialNetworkisLinkedin"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 3
-          },
-          "conditions": [
-            {
-              "id": "eef6c17e-5785-4f29-8351-5113d4822afd",
-              "leftValue": "={{ $('PostForm').item.json.TargetNetworks }}",
-              "rightValue": "Mastodon",
-              "operator": {
-                "type": "array",
-                "operation": "contains",
-                "rightType": "any"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.3,
-      "position": [
-        -656,
-        976
-      ],
-      "id": "34c57eed-145d-4765-b189-51f8c265b66a",
-      "name": "TargetSocialNetworkisMastodon"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 3
-          },
-          "conditions": [
-            {
-              "id": "eef6c17e-5785-4f29-8351-5113d4822afd",
-              "leftValue": "={{ $('PostForm').item.json.TargetNetworks }}",
-              "rightValue": "Bluesky",
-              "operator": {
-                "type": "array",
-                "operation": "contains",
-                "rightType": "any"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.3,
-      "position": [
-        -656,
-        672
-      ],
-      "id": "8cc033ef-4412-4f6d-8434-2d4df595c97f",
-      "name": "TargetSocialNetworkisBluesky"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 3
-          },
-          "conditions": [
-            {
-              "id": "014f23fe-1e75-4990-bfaa-04f8ffb1be08",
-              "leftValue": "={{ $('PostForm').item.json.PostMedia }}",
-              "rightValue": "Image",
-              "operator": {
-                "type": "array",
-                "operation": "notEmpty",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "or"
-        },
-        "options": {
-          "ignoreCase": false
-        }
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.3,
-      "position": [
-        -544,
-        240
-      ],
-      "id": "52e25fe8-6c72-42d5-9ad1-9e12282f264c",
-      "name": "hasMedia1"
     },
     {
       "parameters": {
@@ -681,24 +508,11 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        464,
-        816
+        368,
+        1008
       ],
       "id": "ba4e8dd3-67b0-48e7-89a8-7e6cb91d1577",
       "name": "Sticky Note"
-    },
-    {
-      "parameters": {
-        "content": "## Credentials\nTrying to hide plain text user name and password"
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        144,
-        368
-      ],
-      "id": "a4501af9-7949-4e26-9d6e-05d4255deae5",
-      "name": "Sticky Note1"
     },
     {
       "parameters": {
@@ -733,8 +547,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        480,
-        512
+        464,
+        656
       ],
       "id": "de665761-7a3f-42c8-8ca9-a9aab885e8b8",
       "name": "Sticky Note4"
@@ -761,28 +575,170 @@
           "name": "LinkedIn account"
         }
       }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('PostForm').item.json.TargetNetworks }}",
+                    "rightValue": "LinkedIn",
+                    "operator": {
+                      "type": "array",
+                      "operation": "contains",
+                      "rightType": "any"
+                    },
+                    "id": "6a26ff6d-58e0-4891-825d-10e2615e69fe"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "f8e2d3db-f39f-41ef-9462-e3faadeb986b",
+                    "leftValue": "={{ $('PostForm').item.json.TargetNetworks }}",
+                    "rightValue": "Bluesky",
+                    "operator": {
+                      "type": "array",
+                      "operation": "contains",
+                      "rightType": "any"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "9a452df5-7072-4482-ac92-2e83806070b9",
+                    "leftValue": "={{ $('PostForm').item.json.TargetNetworks }}",
+                    "rightValue": "Mastodon",
+                    "operator": {
+                      "type": "array",
+                      "operation": "contains",
+                      "rightType": "any"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "allMatchingOutputs": true
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -752,
+        704
+      ],
+      "id": "f38abf84-870b-4d1d-bed0-95ad52118522",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "014f23fe-1e75-4990-bfaa-04f8ffb1be08",
+              "leftValue": "={{ $('PostForm').item.json.PostMedia }}",
+              "rightValue": "Image",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -544,
+        240
+      ],
+      "id": "52e25fe8-6c72-42d5-9ad1-9e12282f264c",
+      "name": "hasMediaLinkedIn"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "014f23fe-1e75-4990-bfaa-04f8ffb1be08",
+              "leftValue": "={{ $('PostForm').item.json.PostMedia }}",
+              "rightValue": "Image",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -528,
+        976
+      ],
+      "id": "79387b8c-fa7b-4c85-b841-e8fbe055db47",
+      "name": "hasMediaMastodon"
     }
   ],
   "pinData": {},
   "connections": {
-    "hasMedia": {
-      "main": [
-        [
-          {
-            "node": "Mastodon-Media-Upload",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Mastodon-Post-Simple",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "MediaSwitch": {
       "main": [
         [
@@ -856,72 +812,11 @@
         ]
       ]
     },
-    "TargetSocialNetworkisBluesky": {
-      "main": [
-        [
-          {
-            "node": "CreateBSkySession",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "TargetSocialNetworkisMastodon": {
-      "main": [
-        [
-          {
-            "node": "hasMedia",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "TargetSocialNetworkisLinkedin": {
-      "main": [
-        [
-          {
-            "node": "hasMedia1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "hasMedia1": {
-      "main": [
-        [
-          {
-            "node": "MediaSwitch",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "nonMediaSwitch",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "isValidationOK": {
       "main": [
         [
           {
-            "node": "TargetSocialNetworkisMastodon",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "TargetSocialNetworkisBluesky",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "TargetSocialNetworkisLinkedin",
+            "node": "Switch",
             "type": "main",
             "index": 0
           }
@@ -945,14 +840,75 @@
           }
         ]
       ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "hasMediaLinkedIn",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "CreateBSkySession",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "hasMediaMastodon",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "hasMediaLinkedIn": {
+      "main": [
+        [
+          {
+            "node": "MediaSwitch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "nonMediaSwitch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "hasMediaMastodon": {
+      "main": [
+        [
+          {
+            "node": "Mastodon-Media-Upload",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mastodon-Post-Simple",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "88317305-eabd-4fe4-a2e3-244bc2a41743",
+  "versionId": "baaad21f-6318-4f3d-b6fe-41d317f451d5",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "69c8f3e8f4abce0ae42c3efafb04e635a4840af3580409e2e43cd9379f9de14e"
